@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 — AI Study Circle 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-grid"></div>
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-inner">
+            <div class="nav-logo">
+                <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:0.5rem;">
+                    <span class="ai">AI</span>
+                    <span class="sc">Study Circle</span>
+                    <span class="brand-num">110</span>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">메인 사이트</a></li>
+                <li id="nav-user-menu" class="nav-user-menu">
+                    <button class="nav-user-btn" id="nav-user-btn">
+                        <span id="nav-user-name">관리자</span> ▼
+                    </button>
+                    <div class="nav-dropdown" id="nav-dropdown">
+                        <a href="index.html#membership" class="dropdown-item">내 프로필</a>
+                        <button class="dropdown-item" id="admin-logout-btn">로그아웃</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <!-- 로딩 / 권한 없음 -->
+        <div id="admin-loading" class="admin-loading">관리자 권한 확인 중...</div>
+        <div id="admin-denied" style="display:none;" class="admin-empty">
+            <h2>접근 권한이 없습니다</h2>
+            <p>관리자만 접근할 수 있는 페이지입니다.</p>
+            <a href="index.html" class="btn-primary" style="margin-top:1rem; display:inline-flex;">메인으로 돌아가기 →</a>
+        </div>
+
+        <!-- 관리자 콘텐츠 -->
+        <div id="admin-content" style="display:none;">
+            <div class="admin-header">
+                <h1>관리자 페이지</h1>
+                <p>멤버 관리와 모임 관리를 할 수 있습니다.</p>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="members">멤버 관리</button>
+                <button class="admin-tab" data-tab="events">모임 관리</button>
+                <button class="admin-tab" data-tab="locations">장소 관리</button>
+                <button class="admin-tab" data-tab="inquiries">문의 관리</button>
+            </div>
+
+            <!-- 멤버 관리 -->
+            <div id="panel-members" class="admin-panel active">
+                <div class="admin-card">
+                    <h3>전체 멤버 목록</h3>
+                    <div class="admin-actions">
+                        <input type="text" class="admin-search" id="member-search" placeholder="이름 또는 전화번호로 검색...">
+                    </div>
+                    <div class="admin-table-wrap">
+                        <table class="admin-table" id="members-table">
+                            <thead>
+                                <tr>
+                                    <th>이름</th>
+                                    <th>전화번호</th>
+                                    <th>이메일</th>
+                                    <th>관심분야</th>
+                                    <th>유형</th>
+                                    <th>가입일</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody id="members-tbody">
+                                <tr><td colspan="7" class="admin-loading">로딩 중...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p id="member-count" style="margin-top:1rem; color:var(--text-muted); font-size:0.85rem;"></p>
+                </div>
+            </div>
+
+            <!-- 모임 관리 -->
+            <div id="panel-events" class="admin-panel">
+                <div class="admin-horizontal">
+                <!-- 모임 등록 -->
+                <div class="admin-card event-form-card">
+                    <h3 id="event-form-title">새 모임 등록</h3>
+                    <form id="event-form" class="site-form">
+                        <input type="hidden" id="edit-event-id" value="">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="ev-title">모임 제목 <span class="required">*</span></label>
+                                <input type="text" id="ev-title" required placeholder="2차 정기 모임">
+                            </div>
+                            <div class="form-group">
+                                <label for="ev-date">날짜 <span class="required">*</span></label>
+                                <input type="date" id="ev-date" required>
+                            </div>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="ev-time">시간</label>
+                                <input type="time" id="ev-time" value="19:00">
+                            </div>
+                            <div class="form-group">
+                                <label for="ev-day-label">요일 표시</label>
+                                <select id="ev-day-label">
+                                    <option value="">자동 계산</option>
+                                    <option value="MON">월요일 (MON)</option>
+                                    <option value="TUE">화요일 (TUE)</option>
+                                    <option value="WED">수요일 (WED)</option>
+                                    <option value="THU">목요일 (THU)</option>
+                                    <option value="FRI">금요일 (FRI)</option>
+                                    <option value="SAT">토요일 (SAT)</option>
+                                    <option value="SUN">일요일 (SUN)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="ev-location-select">장소 선택</label>
+                                <select id="ev-location-select">
+                                    <option value="">-- 장소를 선택하세요 --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <input type="hidden" id="ev-location" value="">
+                        <input type="hidden" id="ev-address" value="">
+                        <input type="hidden" id="ev-map-url" value="">
+                        <div class="form-group">
+                            <label for="ev-provision">제공 사항</label>
+                            <input type="text" id="ev-provision" placeholder="간단한 샌드위치 & 음료">
+                        </div>
+                        <div class="form-group">
+                            <label for="ev-desc">설명</label>
+                            <textarea id="ev-desc" rows="3" placeholder="모임 내용, 준비물 등"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="ev-youtube">유튜브 라이브 URL</label>
+                            <input type="url" id="ev-youtube" placeholder="https://youtube.com/live/...">
+                        </div>
+                        <div style="display:flex; gap:0.5rem;">
+                            <button type="submit" class="btn-primary form-submit">모임 등록 →</button>
+                            <button type="button" class="btn-secondary" id="event-form-reset" style="display:none;">취소</button>
+                        </div>
+                        <div class="form-status" id="event-form-status"></div>
+                    </form>
+                </div>
+
+                <!-- 모임 목록 + 참여자 명단 -->
+                <div>
+                    <div class="admin-card">
+                        <h3>모임 목록</h3>
+                        <div class="admin-table-wrap">
+                            <table class="admin-table" id="events-table">
+                                <thead>
+                                    <tr>
+                                        <th>제목</th>
+                                        <th>날짜</th>
+                                        <th>시간</th>
+                                        <th>장소</th>
+                                        <th>상태</th>
+                                        <th>참여자</th>
+                                        <th>관리</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="events-tbody">
+                                    <tr><td colspan="7" class="admin-loading">로딩 중...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 참여자 명단 (동적) -->
+                    <div class="admin-card" id="attendees-card" style="display:none;">
+                        <h3 id="attendees-title">참여자 명단</h3>
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>이름</th>
+                                        <th>전화번호</th>
+                                        <th>이메일</th>
+                                        <th>메모</th>
+                                        <th>신청일</th>
+                                        <th>삭제</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendees-tbody"></tbody>
+                            </table>
+                        </div>
+                        <p id="attendees-count" style="margin-top:1rem; color:var(--text-muted); font-size:0.85rem;"></p>
+                    </div>
+                </div>
+
+                </div><!-- /admin-horizontal -->
+            </div>
+            <!-- 장소 관리 -->
+            <div id="panel-locations" class="admin-panel">
+                <div class="admin-horizontal">
+                <!-- 장소 등록/수정 -->
+                <div class="admin-card event-form-card">
+                    <h3 id="loc-form-title">새 장소 등록</h3>
+                    <form id="loc-form" class="site-form">
+                        <input type="hidden" id="edit-loc-id" value="">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="loc-name">장소 이름 <span class="required">*</span></label>
+                                <input type="text" id="loc-name" required placeholder="옐로펀치 성수메사">
+                            </div>
+                            <div class="form-group">
+                                <label for="loc-type">장소 유형</label>
+                                <select id="loc-type">
+                                    <option value="primary">메인 장소</option>
+                                    <option value="secondary">보조 장소</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="loc-address">주소</label>
+                                <input type="text" id="loc-address" placeholder="성수일로 8길 5 A동 607호">
+                            </div>
+                            <div class="form-group">
+                                <label for="loc-map-url">지도 링크</label>
+                                <input type="url" id="loc-map-url" placeholder="https://naver.me/...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="loc-note">설명/비고</label>
+                            <textarea id="loc-note" rows="2" placeholder="장소 특징, 참고 사항 등"></textarea>
+                        </div>
+                        <div style="display:flex; gap:0.5rem;">
+                            <button type="submit" class="btn-primary form-submit">장소 등록 →</button>
+                            <button type="button" class="btn-secondary" id="loc-form-reset" style="display:none;">취소</button>
+                        </div>
+                        <div class="form-status" id="loc-form-status"></div>
+                    </form>
+                </div>
+
+                <!-- 장소 목록 -->
+                <div class="admin-card">
+                    <h3>장소 목록</h3>
+                    <div class="admin-table-wrap">
+                        <table class="admin-table" id="locations-table">
+                            <thead>
+                                <tr>
+                                    <th>이름</th>
+                                    <th>주소</th>
+                                    <th>유형</th>
+                                    <th>상태</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody id="locations-tbody">
+                                <tr><td colspan="5" class="admin-loading">로딩 중...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div><!-- /admin-horizontal -->
+            </div>
+
+            <!-- 문의 관리 -->
+            <div id="panel-inquiries" class="admin-panel">
+                <div class="admin-card">
+                    <h3>문의 목록</h3>
+                    <p id="inquiry-count" style="margin-bottom:1rem; color:var(--text-muted); font-size:0.85rem;"></p>
+                    <div class="admin-table-wrap">
+                        <table class="admin-table" id="inquiries-table">
+                            <thead>
+                                <tr>
+                                    <th>이름</th>
+                                    <th>전화번호</th>
+                                    <th>이메일</th>
+                                    <th>제목</th>
+                                    <th>내용</th>
+                                    <th>접수일</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inquiries-tbody">
+                                <tr><td colspan="7" class="admin-loading">로딩 중...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 문의 상세보기 모달 -->
+    <div class="inquiry-detail-modal" id="inquiry-detail-modal">
+        <div class="inquiry-detail-content">
+            <button class="inquiry-detail-close" id="inquiry-detail-close">&times;</button>
+            <h3>문의 상세</h3>
+            <div class="inquiry-detail-grid">
+                <div class="inquiry-detail-item">
+                    <span class="inquiry-detail-label">이름</span>
+                    <span class="inquiry-detail-value" id="inq-detail-name">-</span>
+                </div>
+                <div class="inquiry-detail-item">
+                    <span class="inquiry-detail-label">전화번호</span>
+                    <span class="inquiry-detail-value" id="inq-detail-phone">-</span>
+                </div>
+                <div class="inquiry-detail-item">
+                    <span class="inquiry-detail-label">이메일</span>
+                    <span class="inquiry-detail-value" id="inq-detail-email">-</span>
+                </div>
+                <div class="inquiry-detail-item">
+                    <span class="inquiry-detail-label">접수일</span>
+                    <span class="inquiry-detail-value" id="inq-detail-date">-</span>
+                </div>
+            </div>
+            <div class="inquiry-detail-item" style="margin-top:1rem;">
+                <span class="inquiry-detail-label">제목</span>
+                <span class="inquiry-detail-value" id="inq-detail-subject">-</span>
+            </div>
+            <div class="inquiry-detail-item" style="margin-top:1rem;">
+                <span class="inquiry-detail-label">내용</span>
+                <div class="inquiry-detail-message" id="inq-detail-message">-</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-logo">
+                <span class="ai">AI</span> Study Circle <span class="brand-num">110</span>
+            </div>
+            <p class="footer-text"><strong>자율과 창의성 안에서 즐겁게 — 리앤컴퍼니 이미경</strong></p>
+            <p class="footer-since"><strong>Since 2026. 1. 10</strong></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js?v=20260204b"></script>
+    <script src="js/admin.js?v=20260204b"></script>
+</body>
+</html>
